@@ -250,7 +250,11 @@ const videoGrid = document.querySelector('.video-grid');
 
 // YouTube API configuration
 const CHANNEL_ID = 'UC_AppoftheYearAcademy';
-const API_KEY = 'AIzaSyD22OlJLDVA4pCmni6oOEQa05ltu8gbHEI';
+const API_KEY = ''; // Remove hardcoded API key
+
+// Video progress tracking
+let watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '[]');
+let completedWeeks = JSON.parse(localStorage.getItem('completedWeeks') || '[]');
 
 // Function to check if API key is set
 function checkApiKey() {
@@ -258,10 +262,6 @@ function checkApiKey() {
         throw new Error('YouTube API key is not set. Please add your API key to the script.js file.');
     }
 }
-
-// Video progress tracking
-let watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '[]');
-let completedWeeks = JSON.parse(localStorage.getItem('completedWeeks') || '[]');
 
 // Function to create week header
 function createWeekHeader(weekNumber) {
