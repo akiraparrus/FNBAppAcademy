@@ -1,4 +1,4 @@
-# My FnB App Academy Journey
+# FNBAppAcademy
 
 A personal learning journey website that tracks progress, projects, and notes during the FnB App Academy program.
 
@@ -24,7 +24,7 @@ A personal learning journey website that tracks progress, projects, and notes du
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/fnb-app-academy-journey.git
+git clone https://github.com/akiraparrus/FNBAppAcademy.git
 ```
 
 2. Open `index.html` in your browser to view the website.
@@ -46,4 +46,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Author
 
-Made with ❤️ by Akira Parrus 
+Made with ❤️ by Akira Parrus
