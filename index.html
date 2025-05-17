@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My FnB App Academy Journey</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-code"></i>
+                <span>My Learning Journey</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#progress">Progress</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#notes">Notes</a></li>
+            </ul>
+            <button class="theme-toggle" aria-label="Toggle dark mode">
+                <i class="fas fa-moon"></i>
+                <span>Dark Mode</span>
+            </button>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h1>My FnB App Academy Journey</h1>
+                <p>Tracking my progress and sharing my learning experience</p>
+            </div>
+        </section>
+
+        <section id="progress" class="progress">
+            <div class="container">
+                <h2>Learning Progress</h2>
+                <div class="progress-overview">
+                    <div class="progress-bar-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <p class="progress-text">Overall Progress: <span id="progress-percentage">0%</span></p>
+                    </div>
+                    <div class="progress-stats">
+                        <div class="stat">
+                            <span id="completed-weeks">0</span>
+                            <label>Weeks Completed</label>
+                        </div>
+                        <div class="stat">
+                            <span id="remaining-weeks">9</span>
+                            <label>Weeks Remaining</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="curriculum" class="curriculum">
+            <div class="container">
+                <h2>Curriculum</h2>
+                <div class="curriculum-grid">
+                    <div class="curriculum-level">
+                        <div class="level-header">
+                            <h3>Beginner Level</h3>
+                            <span class="level-badge">Level 1</span>
+                        </div>
+                        <div class="level-content">
+                            <h4>Programming Basics</h4>
+                            <ul>
+                                <li>Introduction to JavaScript</li>
+                            </ul>
+                            <h4>App Development</h4>
+                            <ul>
+                                <li>Fundamentals using React</li>
+                            </ul>
+                            <h4>Essential Tools</h4>
+                            <ul>
+                                <li>GitHub</li>
+                                <li>UX Design principles</li>
+                                <li>Design Thinking</li>
+                                <li>Business Development</li>
+                                <li>AI integration</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="curriculum-level">
+                        <div class="level-header">
+                            <h3>Intermediate Level</h3>
+                            <span class="level-badge">Level 2</span>
+                        </div>
+                        <div class="level-content">
+                            <h4>Advanced React</h4>
+                            <ul>
+                                <li>Dynamic data management</li>
+                                <li>User input handling</li>
+                                <li>Styling</li>
+                            </ul>
+                            <h4>Project Development</h4>
+                            <ul>
+                                <li>Build TaskMate app</li>
+                            </ul>
+                            <h4>Additional Skills</h4>
+                            <ul>
+                                <li>App strategies</li>
+                                <li>Layouts</li>
+                                <li>Hardware APIs</li>
+                                <li>Data processing</li>
+                                <li>Analysis</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="curriculum-level">
+                        <div class="level-header">
+                            <h3>Advanced Skills</h3>
+                            <span class="level-badge">Level 3</span>
+                        </div>
+                        <div class="level-content">
+                            <h4>Routing & Navigation</h4>
+                            <ul>
+                                <li>Dynamic routing with React Router</li>
+                            </ul>
+                            <h4>UI/UX Enhancement</h4>
+                            <ul>
+                                <li>Tailwind CSS for rapid UI development</li>
+                            </ul>
+                            <h4>Backend Integration</h4>
+                            <ul>
+                                <li>Firebase for backend functionalities</li>
+                            </ul>
+                            <h4>Professional Development</h4>
+                            <ul>
+                                <li>Backend development</li>
+                                <li>API integration</li>
+                                <li>Business funding</li>
+                                <li>App marketing</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="projects">
+            <div class="container">
+                <h2>My Projects</h2>
+                <div class="project-actions">
+                    <button class="btn" id="addProjectBtn">
+                        <i class="fas fa-plus"></i> Add New Project
+                    </button>
+                </div>
+                <div class="project-grid">
+                    <div class="project-card" data-project-id="1">
+                        <div class="project-header">
+                            <h3>Project 1</h3>
+                            <div class="project-actions">
+                                <button class="edit-project" title="Edit Project">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="delete-project" title="Delete Project">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="project-content">
+                            <p class="project-description">Description of your first project</p>
+                            <div class="project-links">
+                                <a href="#" class="btn" target="_blank">
+                                    <i class="fab fa-github"></i> View Code
+                                </a>
+                                <a href="#" class="btn" target="_blank">
+                                    <i class="fas fa-external-link-alt"></i> Live Demo
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Project Modal -->
+        <div class="modal" id="projectModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Add/Edit Project</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <form id="projectForm">
+                    <div class="form-group">
+                        <label for="projectTitle">Project Title</label>
+                        <input type="text" id="projectTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="projectDescription">Description</label>
+                        <textarea id="projectDescription" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="githubLink">GitHub Repository URL</label>
+                        <input type="url" id="githubLink" placeholder="https://github.com/username/repo">
+                    </div>
+                    <div class="form-group">
+                        <label for="demoLink">Live Demo URL</label>
+                        <input type="url" id="demoLink" placeholder="https://your-demo-url.com">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn">Save Project</button>
+                        <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <section id="videos" class="videos">
+            <div class="container">
+                <h2>Live Streamed Videos</h2>
+                <div class="video-grid">
+                    <div class="video-card">
+                        <div class="video-thumbnail">
+                            <img src="https://img.youtube.com/vi/VIDEO_ID_1/maxresdefault.jpg" alt="Video thumbnail">
+                            <div class="video-duration">1:30:00</div>
+                        </div>
+                        <div class="video-info">
+                            <div class="video-header">
+                                <h3>Week 1: Introduction to Web Development</h3>
+                                <label class="video-checkbox">
+                                    <input type="checkbox" class="video-watched" data-video-id="VIDEO_ID_1">
+                                    <span>Watched</span>
+                                </label>
+                            </div>
+                            <p class="video-date">March 15, 2024</p>
+                            <p class="video-description">Learn the basics of HTML, CSS, and JavaScript in this comprehensive introduction.</p>
+                            <a href="https://www.youtube.com/@AppoftheYearAcademy" target="_blank" class="btn">
+                                <i class="fab fa-youtube"></i> Watch on YouTube
+                            </a>
+                        </div>
+                    </div>
+                    <!-- More video cards will be added dynamically -->
+                </div>
+                <div class="video-actions">
+                    <a href="https://www.youtube.com/@AppoftheYearAcademy" target="_blank" class="btn btn-secondary">
+                        <i class="fab fa-youtube"></i> View All Videos
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="notes" class="notes">
+            <div class="container">
+                <h2>Learning Notes</h2>
+                <div class="notes-container">
+                    <div class="notes-sidebar">
+                        <div class="notes-categories">
+                            <h3>Categories</h3>
+                            <ul class="category-list">
+                                <li class="active" data-category="all">
+                                    <i class="fas fa-book"></i> All Notes
+                                </li>
+                                <li data-category="concept">
+                                    <i class="fas fa-lightbulb"></i> Concepts
+                                </li>
+                                <li data-category="example">
+                                    <i class="fas fa-code"></i> Code Examples
+                                </li>
+                                <li data-category="question">
+                                    <i class="fas fa-question-circle"></i> Questions
+                                </li>
+                                <li data-category="todo">
+                                    <i class="fas fa-tasks"></i> To-Do List
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="notes-search">
+                            <input type="text" placeholder="Search notes..." class="search-input">
+                            <i class="fas fa-search"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="notes-main">
+                        <div class="notes-editor">
+                            <div class="editor-header">
+                                <select class="note-category">
+                                    <option value="concept">Concept</option>
+                                    <option value="example">Code Example</option>
+                                    <option value="question">Question</option>
+                                    <option value="todo">To-Do</option>
+                                </select>
+                                <div class="formatting-tools">
+                                    <button class="format-btn" data-format="bold" title="Bold"><i class="fas fa-bold"></i></button>
+                                    <button class="format-btn" data-format="italic" title="Italic"><i class="fas fa-italic"></i></button>
+                                    <button class="format-btn" data-format="list" title="List"><i class="fas fa-list"></i></button>
+                                    <button class="format-btn" data-format="code" title="Code"><i class="fas fa-code"></i></button>
+                                    <button class="format-btn" data-format="link" title="Link"><i class="fas fa-link"></i></button>
+                                </div>
+                            </div>
+                            <textarea class="lesson-notes" placeholder="Start typing your notes here..."></textarea>
+                            <div class="editor-footer">
+                                <button class="save-notes btn">
+                                    <i class="fas fa-save"></i> Save Note
+                                </button>
+                                <button class="clear-notes btn btn-secondary">
+                                    <i class="fas fa-eraser"></i> Clear
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="notes-list-container">
+                            <div class="notes-list-header">
+                                <h3>Saved Notes</h3>
+                                <div class="notes-sort">
+                                    <select class="sort-notes">
+                                        <option value="newest">Newest First</option>
+                                        <option value="oldest">Oldest First</option>
+                                        <option value="category">By Category</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="notes-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 My FnB App Academy Journey</p>
+            <p class="credit">Made with ❤️ by Akira Parrus</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html> 
