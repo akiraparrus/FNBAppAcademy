@@ -589,136 +589,218 @@ function removeImage(noteId, imageData) {
 }
 
 // Progress tracking system
-const weekItems = document.querySelectorAll('.week-item');
+const trackablePoints = document.querySelectorAll('.trackable-point');
 const progressFill = document.querySelector('.progress-fill');
 const progressText = document.querySelector('.progress-text');
+const totalProgressCircle = document.querySelector('.total-progress-circle');
+const weeklyProgressCircle = document.querySelector('.weekly-progress-circle');
+const currentWeekNumberSpan = document.querySelector('.current-week-number');
+const weeklyProgressSummaryDiv = document.querySelector('.weekly-progress-summary');
+
+// Create and append current week display
+const currentWeekDisplay = document.createElement('div');
+currentWeekDisplay.className = 'current-week-display';
+currentWeekDisplay.innerHTML = '<strong>Current Week:</strong> Week 1';
+
+// Append currentWeekDisplay to the progress section
+document.addEventListener('DOMContentLoaded', () => {
+    const progressSection = document.getElementById('progress');
+    if(progressSection) {
+        const progressOverview = progressSection.querySelector('.progress-overview');
+        if(progressOverview) {
+            progressSection.insertBefore(currentWeekDisplay, progressOverview);
+        }
+    }
+});
 
 // Load progress from localStorage
-function loadWeeklyProgress() {
+function loadProgress() {
     try {
-        const progress = JSON.parse(localStorage.getItem('sessionProgress')) || {};
+        const completedPoints = JSON.parse(localStorage.getItem('learningProgress')) || {};
         let totalCompleted = 0;
-        const weeklyProgress = {};
+        const weeklyCompletedCounts = {};
+        const totalPointsPerWeek = {};
+        let totalPossiblePoints = 0;
 
-        // Initialize weekly progress
-        for (let i = 1; i <= 9; i++) {
-            weeklyProgress[`week${i}`] = 0;
-        }
+        // Initialize weekly counts and total points per week
+        const trackablePoints = document.querySelectorAll('.trackable-point'); // Select inside loadProgress
+        trackablePoints.forEach(point => {
+            const sessionId = point.dataset.sessionId;
+            const weekNumber = sessionId.split('-')[0];
+            if (!weeklyCompletedCounts[weekNumber]) {
+                weeklyCompletedCounts[weekNumber] = 0;
+                totalPointsPerWeek[weekNumber] = 0;
+            }
+            totalPointsPerWeek[weekNumber]++;
+            totalPossiblePoints++;
+        });
 
-        // Count completed sessions
-        weekItems.forEach(item => {
-            const sessionId = item.dataset.week;
-            const weekNumber = sessionId.split('-')[0]; // e.g., "week1-1" -> "week1"
-            
-            if (progress[sessionId]) {
-                item.classList.add('completed');
-                item.querySelector('.week-status').textContent = 'Completed';
+        // Count completed points and update UI
+        trackablePoints.forEach(point => {
+            const sessionId = point.dataset.sessionId;
+            const pointId = point.dataset.pointId;
+            const pointKey = `${sessionId}-${pointId}`;
+            const weekNumber = sessionId.split('-')[0];
+
+            if (completedPoints[pointKey]) {
+                point.classList.add('completed');
                 totalCompleted++;
-                weeklyProgress[weekNumber]++;
+                weeklyCompletedCounts[weekNumber]++;
             } else {
-                item.classList.remove('completed');
-                item.querySelector('.week-status').textContent = 'Not Started';
+                point.classList.remove('completed');
             }
         });
 
-        updateProgress(totalCompleted, weeklyProgress);
-        console.log('Progress loaded:', progress);
+        updateProgress(totalCompleted, weeklyCompletedCounts, totalPointsPerWeek, totalPossiblePoints);
+        console.log('Progress loaded:', completedPoints);
     } catch (error) {
         console.error('Error loading progress:', error);
-        localStorage.setItem('sessionProgress', JSON.stringify({}));
+        localStorage.setItem('learningProgress', JSON.stringify({})); // Reset if error
     }
 }
 
-// Toggle session completion
-function toggleWeek(sessionId) {
+// Add event listeners for trackable points
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM fully loaded and parsed. Setting up checkbox listeners.');
+    const checkboxes = document.querySelectorAll('.completion-checkbox');
+    console.log(`Found ${checkboxes.length} completion checkboxes.`);
+
+    checkboxes.forEach(checkbox => {
+        checkbox.style.cursor = 'pointer'; // Indicate clickable
+        checkbox.addEventListener('click', (event) => {
+            console.log('Checkbox clicked!');
+            const pointElement = checkbox.closest('.trackable-point'); // Find the parent list item
+            if (pointElement) {
+                try {
+                    togglePointCompletion(pointElement); // Toggle completion on the parent li
+                    showNotification('Progress updated successfully!', 'success');
+                } catch (error) {
+                    console.error('Error toggling point completion:', error);
+                    showNotification('An error occurred while updating point status.', 'error');
+                }
+            }
+            event.stopPropagation(); // Prevent click from bubbling up to parent li
+        });
+    });
+
+    // Load initial progress
+    loadProgress();
+});
+
+// Toggle point completion
+function togglePointCompletion(pointElement) {
     try {
-        const progress = JSON.parse(localStorage.getItem('sessionProgress')) || {};
-        const sessionItem = document.querySelector(`[data-week="${sessionId}"]`);
-        const weekNumber = sessionId.split('-')[0];
-        
-        if (progress[sessionId]) {
-            delete progress[sessionId];
-            sessionItem.classList.remove('completed');
-            sessionItem.querySelector('.week-status').textContent = 'Not Started';
+        const completedPoints = JSON.parse(localStorage.getItem('learningProgress')) || {};
+        const sessionId = pointElement.dataset.sessionId;
+        const pointId = pointElement.dataset.pointId;
+        const pointKey = `${sessionId}-${pointId}`;
+
+        if (completedPoints[pointKey]) {
+            delete completedPoints[pointKey];
+            pointElement.classList.remove('completed');
         } else {
-            progress[sessionId] = {
+            completedPoints[pointKey] = {
                 completed: true,
                 date: new Date().toISOString()
             };
-            sessionItem.classList.add('completed');
-            sessionItem.querySelector('.week-status').textContent = 'Completed';
+            pointElement.classList.add('completed');
         }
 
         // Save to localStorage
-        localStorage.setItem('sessionProgress', JSON.stringify(progress));
-        
-        // Calculate progress
-        const totalCompleted = Object.keys(progress).length;
-        const weeklyProgress = {};
-        
-        // Count completed sessions per week
-        for (let i = 1; i <= 9; i++) {
-            weeklyProgress[`week${i}`] = 0;
-        }
-        
-        Object.keys(progress).forEach(session => {
-            const week = session.split('-')[0];
-            weeklyProgress[week]++;
+        localStorage.setItem('learningProgress', JSON.stringify(completedPoints));
+
+        // Recalculate and update progress
+        let totalCompleted = 0;
+        const weeklyCompletedCounts = {};
+        const totalPointsPerWeek = {};
+        let totalPossiblePoints = 0;
+
+        // Initialize counts
+        const trackablePoints = document.querySelectorAll('.trackable-point');
+        trackablePoints.forEach(point => {
+            const sessionId = point.dataset.sessionId;
+            const weekNumber = sessionId.split('-')[0];
+            if (!weeklyCompletedCounts[weekNumber]) {
+                weeklyCompletedCounts[weekNumber] = 0;
+                totalPointsPerWeek[weekNumber] = 0;
+            }
+            totalPointsPerWeek[weekNumber]++;
+            totalPossiblePoints++;
         });
 
-        updateProgress(totalCompleted, weeklyProgress);
-        
-        // Show save confirmation
-        showNotification('Progress saved successfully!', 'success');
-        
-        console.log('Progress updated:', progress);
+        // Count completed after toggle
+        Object.keys(completedPoints).forEach(key => {
+            const [sessionId, pointId] = key.split('-');
+            const weekNumber = sessionId.split('-')[0];
+            totalCompleted++;
+            weeklyCompletedCounts[weekNumber]++;
+        });
+
+        updateProgress(totalCompleted, weeklyCompletedCounts, totalPointsPerWeek, totalPossiblePoints);
     } catch (error) {
         console.error('Error updating progress:', error);
-        showNotification('Error saving progress. Please try again.', 'error');
+        throw error; // Re-throw to be caught by the caller
     }
 }
 
-// Update progress display
-function updateProgress(totalCompleted, weeklyProgress) {
-    const totalSessions = 18;
-    const totalPercentage = (totalCompleted / totalSessions * 100).toFixed(2);
-    
-    // Update total progress bar
-    progressFill.style.width = `${totalPercentage}%`;
-    
-    // Create progress text with total and weekly progress
-    let progressHTML = `
-        <div class="total-progress">
-            <strong>Total Progress:</strong> ${totalPercentage}% (${totalCompleted}/${totalSessions} sessions)
-        </div>
-        <div class="weekly-progress">
-            <strong>Weekly Progress:</strong>
-    `;
-    
-    // Add weekly progress
-    Object.entries(weeklyProgress).forEach(([week, completed]) => {
-        const weekNumber = week.replace('week', '');
-        const weekPercentage = (completed / 2 * 100).toFixed(0);
-        progressHTML += `
-            <div class="week-progress">
-                Week ${weekNumber}: ${weekPercentage}% (${completed}/2 sessions)
-            </div>
-        `;
-    });
-    
-    progressHTML += '</div>';
-    progressText.innerHTML = progressHTML;
+// Update progress display (both circular and text summary)
+function updateProgress(totalCompleted, weeklyCompletedCounts, totalPointsPerWeek, totalPossiblePoints) {
+    console.log('Updating progress...', {totalCompleted, weeklyCompletedCounts, totalPointsPerWeek, totalPossiblePoints});
+    try {
+        // Update Total Progress Circle
+        const totalPercentage = totalPossiblePoints > 0 ? (totalCompleted / totalPossiblePoints) * 100 : 0;
+        totalProgressCircle.style.background = `conic-gradient(var(--accent-color) ${totalPercentage}%, var(--border-color) 0%)`;
+        totalProgressCircle.querySelector('.progress-circle-inner').textContent = `${Math.round(totalPercentage)}%`;
+
+        // Find and display the current week
+        let currentWeekNumber = 1;
+        for (let i = 1; i <= 9; i++) { // Iterate through weeks
+             // Check if the week has any points and if not all points in the week are completed
+             const weekTotalPoints = totalPointsPerWeek[`week${i}`] || 0;
+             const weekCompletedPoints = weeklyCompletedCounts[`week${i}`] || 0;
+             if (weekTotalPoints > 0 && weekCompletedPoints < weekTotalPoints) {
+                 currentWeekNumber = i;
+                 break; // Found the first week with incomplete points
+             }
+             if (i === 9 && weekCompletedPoints === weekTotalPoints && weekTotalPoints > 0) {
+                 // If all points in the last week are completed, stay on the last week
+                 currentWeekNumber = i;
+             }
+        }
+
+        // Update current week display
+        currentWeekNumberSpan.textContent = currentWeekNumber;
+        currentWeekDisplay.innerHTML = `<strong>Current Week:</strong> Week ${currentWeekNumber}`;
+
+        // Update Weekly Progress Circle for the current week
+        const currentWeekCompleted = weeklyCompletedCounts[`week${currentWeekNumber}`] || 0;
+        const currentWeekTotalPoints = totalPointsPerWeek[`week${currentWeekNumber}`] || 0;
+        const weeklyPercentage = currentWeekTotalPoints > 0 ? (currentWeekCompleted / currentWeekTotalPoints) * 100 : 0;
+        weeklyProgressCircle.style.background = `conic-gradient(var(--accent-color) ${weeklyPercentage}%, var(--border-color) 0%)`;
+        weeklyProgressCircle.querySelector('.progress-circle-inner').textContent = `${Math.round(weeklyPercentage)}%`;
+
+        // Update Weekly Progress Summary Text
+        let weeklySummaryHTML = '<strong>Weekly Progress:</strong>';
+        for (let i = 1; i <= 9; i++) {
+            const weekCompleted = weeklyCompletedCounts[`week${i}`] || 0;
+            const weekTotal = totalPointsPerWeek[`week${i}`] || 0;
+            const weekPercent = weekTotal > 0 ? (weekCompleted / weekTotal * 100).toFixed(0) : 0;
+            weeklySummaryHTML += `
+                <div class="week-progress">
+                    Week ${i}: ${weekPercent}% (${weekCompleted}/${weekTotal} points)
+                </div>
+            `;
+        }
+        weeklyProgressSummaryDiv.innerHTML = weeklySummaryHTML;
+
+        // Update the old progress bar text as well, for consistency or if still used
+        const totalWeeks = 9; // Assuming 9 weeks total
+        const completedWeeks = totalCompleted / (totalPossiblePoints / totalWeeks);
+        // Corrected this line: use totalCompleted instead of completedCompleted
+         progressText.textContent = `${Math.round(totalPercentage)}% Complete (${totalCompleted}/${totalPossiblePoints} points, ${completedWeeks.toFixed(1)}/9 weeks)`;
+
+    } catch (error) {
+        console.error('Error in updateProgress:', error);
+        showNotification('An error occurred while displaying progress.', 'error');
+    }
 }
-
-// Add event listeners for session toggles
-weekItems.forEach(item => {
-    const toggleBtn = item.querySelector('.toggle-week');
-    toggleBtn.addEventListener('click', () => {
-        toggleWeek(item.dataset.week);
-    });
-});
-
-// Initialize progress tracking when the page loads
-document.addEventListener('DOMContentLoaded', () => {
-    loadWeeklyProgress();
-});

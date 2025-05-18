@@ -17,297 +17,67 @@
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#progress">Progress</a></li>
-                <li><a href="#projects">Projects</a></li>
+                <li><a href="#curriculum">Curriculum</a></li>
                 <li><a href="#notes">Notes</a></li>
+                <li><a href="#projects">Projects</a></li>
             </ul>
-            <button class="theme-toggle" aria-label="Toggle dark mode">
-                <i class="fas fa-moon"></i>
-                <span>Dark Mode</span>
-            </button>
-            <button class="mobile-menu-btn">
-                <i class="fas fa-bars"></i>
-            </button>
+            <div class="nav-utility">
+                <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+                <button class="theme-toggle" aria-label="Toggle dark mode">
+                    <i class="fas fa-moon"></i>
+                    <span>Dark Mode</span>
+                </button>
+                <button class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
         </nav>
     </header>
 
-    <main>
-        <section id="home" class="hero">
-            <div class="hero-content">
-                <h1>Akira's FnB App Academy Journey</h1>
-                <p>Tracking my progress and sharing my learning experience</p>
-            </div>
-        </section>
-
-        <section id="progress" class="progress">
-            <div class="container">
-                <h2>Learning Progress</h2>
-                <div class="progress-overview">
-                    <div class="progress-bar-container">
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 0%"></div>
-                        </div>
-                        <p class="progress-text">Overall Progress: <span id="progress-percentage">0%</span></p>
-                    </div>
-                    
-                    <div class="progress-content">
-                        <div class="weekly-progress">
-                            <h3>Learning Progress</h3>
-                            <div class="week-grid">
-                                <!-- Week 1 -->
-                                <div class="week-item" data-week="week1-1">
-                                    <div class="week-header">
-                                        <h4>May 6</h4>
-                                        <span class="week-status">Not Started</span>
-                                    </div>
-                                    <div class="week-content">
-                                        <p>Orientation</p>
-                                        <button class="btn btn-secondary toggle-week" data-week="week1-1">
-                                            <i class="fas fa-check"></i> Mark Complete
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="week-item" data-week="week1-2">
-                                    <div class="week-header">
-                                        <h4>May 8</h4>
-                                        <span class="week-status">Not Started</span>
-                                    </div>
-                                    <div class="week-content">
-                                        <p>App Strategies</p>
-                                        <button class="btn btn-secondary toggle-week" data-week="week1-2">
-                                            <i class="fas fa-check"></i> Mark Complete
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Week 2 -->
-                                <div class="week-item" data-week="week2-1">
-                                    <div class="week-header">
-                                        <h4>May 13</h4>
-                                        <span class="week-status">Not Started</span>
-                                    </div>
-                                    <div class="week-content">
-                                        <p>GitHub and Collaboration</p>
-                                        <button class="btn btn-secondary toggle-week" data-week="week2-1">
-                                            <i class="fas fa-check"></i> Mark Complete
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="week-item" data-week="week2-2">
-                                    <div class="week-header">
-                                        <h4>May 15</h4>
-                                        <span class="week-status">Not Started</span>
-                                    </div>
-                                    <div class="week-content">
-                                        <p>Build an App with HTML</p>
-                                        <button class="btn btn-secondary toggle-week" data-week="week2-2">
-                                            <i class="fas fa-check"></i> Mark Complete
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Week 3 -->
-                                <div class="week-item" data-week="week3-1">
-                                    <div class="week-header">
-                                        <h4>May 20</h4>
-                                        <span class="week-status">Not Started</span>
-                                    </div>
-                                    <div class="week-content">
-                                        <p>UX Design & Layouts</p>
-                                        <button class="btn btn-secondary toggle-week" data-week="week3-1">
-                                            <i class="fas fa-check"></i> Mark Complete
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="week-item" data-week="week3-2">
-                                    <div class="week-header">
-                                        <h4>May 22</h4>
-                                        <span class="week-status">Not Started</span>
-                                    </div>
-                                    <div class="week-content">
-                                        <p>Feedback and Q&A</p>
-                                        <button class="btn btn-secondary toggle-week" data-week="week3-2">
-                                            <i class="fas fa-check"></i> Mark Complete
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Week 4 -->
-                                <div class="week-item" data-week="week4-1">
-                                    <div class="week-header">
-                                        <h4>May 27</h4>
-                                        <span class="week-status">Not Started</span>
-                                    </div>
-                                    <div class="week-content">
-                                        <p>Design Thinking</p>
-                                        <button class="btn btn-secondary toggle-week" data-week="week4-1">
-                                            <i class="fas fa-check"></i> Mark Complete
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="week-item" data-week="week4-2">
-                                    <div class="week-header">
-                                        <h4>May 29</h4>
-                                        <span class="week-status">Not Started</span>
-                                    </div>
-                                    <div class="week-content">
-                                        <p>APIs and Data</p>
-                                        <button class="btn btn-secondary toggle-week" data-week="week4-2">
-                                            <i class="fas fa-check"></i> Mark Complete
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Week 5 -->
-                                <div class="week-item" data-week="week5-1">
-                                    <div class="week-header">
-                                        <h4>June 3</h4>
-                                        <span class="week-status">Not Started</span>
-                                    </div>
-                                    <div class="week-content">
-                                        <p>User-Centric Development</p>
-                                        <button class="btn btn-secondary toggle-week" data-week="week5-1">
-                                            <i class="fas fa-check"></i> Mark Complete
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="week-item" data-week="week5-2">
-                                    <div class="week-header">
-                                        <h4>June 5</h4>
-                                        <span class="week-status">Not Started</span>
-                                    </div>
-                                    <div class="week-content">
-                                        <p>Data Management</p>
-                                        <button class="btn btn-secondary toggle-week" data-week="week5-2">
-                                            <i class="fas fa-check"></i> Mark Complete
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Week 6 -->
-                                <div class="week-item" data-week="week6-1">
-                                    <div class="week-header">
-                                        <h4>June 10</h4>
-                                        <span class="week-status">Not Started</span>
-                                    </div>
-                                    <div class="week-content">
-                                        <p>Business Development</p>
-                                        <button class="btn btn-secondary toggle-week" data-week="week6-1">
-                                            <i class="fas fa-check"></i> Mark Complete
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="week-item" data-week="week6-2">
-                                    <div class="week-header">
-                                        <h4>June 12</h4>
-                                        <span class="week-status">Not Started</span>
-                                    </div>
-                                    <div class="week-content">
-                                        <p>Feedback and Q&A</p>
-                                        <button class="btn btn-secondary toggle-week" data-week="week6-2">
-                                            <i class="fas fa-check"></i> Mark Complete
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Week 7 -->
-                                <div class="week-item" data-week="week7-1">
-                                    <div class="week-header">
-                                        <h4>June 17</h4>
-                                        <span class="week-status">Not Started</span>
-                                    </div>
-                                    <div class="week-content">
-                                        <p>Backend Development Intro</p>
-                                        <button class="btn btn-secondary toggle-week" data-week="week7-1">
-                                            <i class="fas fa-check"></i> Mark Complete
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="week-item" data-week="week7-2">
-                                    <div class="week-header">
-                                        <h4>June 19</h4>
-                                        <span class="week-status">Not Started</span>
-                                    </div>
-                                    <div class="week-content">
-                                        <p>Build an API</p>
-                                        <button class="btn btn-secondary toggle-week" data-week="week7-2">
-                                            <i class="fas fa-check"></i> Mark Complete
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Week 8 -->
-                                <div class="week-item" data-week="week8-1">
-                                    <div class="week-header">
-                                        <h4>June 24</h4>
-                                        <span class="week-status">Not Started</span>
-                                    </div>
-                                    <div class="week-content">
-                                        <p>AI in Development</p>
-                                        <button class="btn btn-secondary toggle-week" data-week="week8-1">
-                                            <i class="fas fa-check"></i> Mark Complete
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="week-item" data-week="week8-2">
-                                    <div class="week-header">
-                                        <h4>June 26</h4>
-                                        <span class="week-status">Not Started</span>
-                                    </div>
-                                    <div class="week-content">
-                                        <p>Business Funding</p>
-                                        <button class="btn btn-secondary toggle-week" data-week="week8-2">
-                                            <i class="fas fa-check"></i> Mark Complete
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Week 9 -->
-                                <div class="week-item" data-week="week9-1">
-                                    <div class="week-header">
-                                        <h4>July 1</h4>
-                                        <span class="week-status">Not Started</span>
-                                    </div>
-                                    <div class="week-content">
-                                        <p>App Business Marketing</p>
-                                        <button class="btn btn-secondary toggle-week" data-week="week9-1">
-                                            <i class="fas fa-check"></i> Mark Complete
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="week-item" data-week="week9-2">
-                                    <div class="week-header">
-                                        <h4>July 3</h4>
-                                        <span class="week-status">Not Started</span>
-                                    </div>
-                                    <div class="week-content">
-                                        <p>Final Feedback and Q&A</p>
-                                        <button class="btn btn-secondary toggle-week" data-week="week9-2">
-                                            <i class="fas fa-check"></i> Mark Complete
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="progress-tasks">
-                            <h3>Current Session Tasks</h3>
-                            <div class="task-list">
-                                <!-- Task items will be added here dynamically -->
-                            </div>
-                            <div class="add-task">
-                                <input type="text" id="taskInput" placeholder="Add a new task">
-                                <button class="btn" id="addTaskBtn">
-                                    <i class="fas fa-plus"></i> Add Task
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="profile-section">
+                <h2>Akira's Full App Academy Journey</h2>
+                <div class="sidebar-icons">
+                     <!-- Placeholder Icons matching UI -->
+                     <i class="fas fa-home" title="Home"></i>
+                     <i class="fas fa-user" title="Profile"></i>
+                     <i class="fas fa-graduation-cap" title="Curriculum"></i>
+                     <i class="fas fa-clipboard-list" title="Notes"></i>
+                     <i class="fas fa-project-diagram" title="Projects"></i>
+                     <i class="fas fa-chart-line" title="Progress"></i>
                 </div>
             </div>
-        </section>
 
-        <section id="curriculum" class="curriculum">
-            <div class="container">
+            <section id="progress" class="progress">
+                <h2>Learning Progress</h2>
+                 <div class="progress-overview">
+                    <div class="progress-circle-container">
+                        <div class="progress-circle total-progress-circle" data-progress="0">
+                            <div class="progress-circle-inner">0%</div>
+                        </div>
+                        <p>Total Progress</p>
+                    </div>
+                    <div class="progress-circle-container">
+                        <div class="progress-circle weekly-progress-circle" data-progress="0">
+                            <div class="progress-circle-inner">0%</div>
+                        </div>
+                        <p>Week <span class="current-week-number">1</span> Progress</p>
+                    </div>
+                 </div>
+            </section>
+
+        </aside>
+
+        <main class="main-content">
+            <section id="home" class="hero">
+                <div class="hero-content">
+                    <h1>Akira's FnB App Academy Journey</h1>
+                    <p>Tracking my progress and sharing my learning experience</p>
+                </div>
+            </section>
+
+            <section id="curriculum" class="curriculum">
                 <h2>App Development Curriculum</h2>
                 <div class="curriculum-grid">
                     <div class="curriculum-level">
@@ -318,15 +88,15 @@
                         <div class="level-content">
                             <h4>May 6: Orientation</h4>
                             <ul>
-                                <li>Program Overview</li>
-                                <li>Learning Objectives</li>
-                                <li>Tools and Resources</li>
+                                <li class="trackable-point" data-session-id="week1-1" data-point-id="1"><span class="completion-checkbox"></span>Program Overview</li>
+                                <li class="trackable-point" data-session-id="week1-1" data-point-id="2"><span class="completion-checkbox"></span>Learning Objectives</li>
+                                <li class="trackable-point" data-session-id="week1-1" data-point-id="3"><span class="completion-checkbox"></span>Tools and Resources</li>
                             </ul>
                             <h4>May 8: App Strategies</h4>
                             <ul>
-                                <li>Platform Selection</li>
-                                <li>Native vs Web Apps</li>
-                                <li>Development Approaches</li>
+                                <li class="trackable-point" data-session-id="week1-2" data-point-id="1"><span class="completion-checkbox"></span>Platform Selection</li>
+                                <li class="trackable-point" data-session-id="week1-2" data-point-id="2"><span class="completion-checkbox"></span>Native vs Web Apps</li>
+                                <li class="trackable-point" data-session-id="week1-2" data-point-id="3"><span class="completion-checkbox"></span>Development Approaches</li>
                             </ul>
                         </div>
                     </div>
@@ -339,15 +109,15 @@
                         <div class="level-content">
                             <h4>May 13: GitHub and Collaboration</h4>
                             <ul>
-                                <li>Version Control</li>
-                                <li>Team Collaboration</li>
-                                <li>Best Practices</li>
+                                <li class="trackable-point" data-session-id="week2-1" data-point-id="1"><span class="completion-checkbox"></span>Version Control</li>
+                                <li class="trackable-point" data-session-id="week2-1" data-point-id="2"><span class="completion-checkbox"></span>Team Collaboration</li>
+                                <li class="trackable-point" data-session-id="week2-1" data-point-id="3"><span class="completion-checkbox"></span>Best Practices</li>
                             </ul>
                             <h4>May 15: Build an App with HTML</h4>
                             <ul>
-                                <li>Software Development Life Cycle</li>
-                                <li>HTML Fundamentals</li>
-                                <li>Basic App Structure</li>
+                                <li class="trackable-point" data-session-id="week2-2" data-point-id="1"><span class="completion-checkbox"></span>Software Development Life Cycle</li>
+                                <li class="trackable-point" data-session-id="week2-2" data-point-id="2"><span class="completion-checkbox"></span>HTML Fundamentals</li>
+                                <li class="trackable-point" data-session-id="week2-2" data-point-id="3"><span class="completion-checkbox"></span>Basic App Structure</li>
                             </ul>
                         </div>
                     </div>
@@ -360,15 +130,15 @@
                         <div class="level-content">
                             <h4>May 20: UX Design & Layouts</h4>
                             <ul>
-                                <li>Principles of UX Design</li>
-                                <li>Basic Layouts</li>
-                                <li>Transitions and Animations</li>
+                                <li class="trackable-point" data-session-id="week3-1" data-point-id="1"><span class="completion-checkbox"></span>Principles of UX Design</li>
+                                <li class="trackable-point" data-session-id="week3-1" data-point-id="2"><span class="completion-checkbox"></span>Basic Layouts</li>
+                                <li class="trackable-point" data-session-id="week3-1" data-point-id="3"><span class="completion-checkbox"></span>Transitions and Animations</li>
                             </ul>
                             <h4>May 22: Feedback and Q&A</h4>
                             <ul>
-                                <li>Progress Review</li>
-                                <li>Questions and Answers</li>
-                                <li>Next Steps</li>
+                                <li class="trackable-point" data-session-id="week3-2" data-point-id="1"><span class="completion-checkbox"></span>Progress Review</li>
+                                <li class="trackable-point" data-session-id="week3-2" data-point-id="2"><span class="completion-checkbox"></span>Questions and Answers</li>
+                                <li class="trackable-point" data-session-id="week3-2" data-point-id="3"><span class="completion-checkbox"></span>Next Steps</li>
                             </ul>
                         </div>
                     </div>
@@ -381,15 +151,15 @@
                         <div class="level-content">
                             <h4>May 27: Design Thinking</h4>
                             <ul>
-                                <li>User-Centered Design</li>
-                                <li>Problem-Solving Methods</li>
-                                <li>Design Process</li>
+                                <li class="trackable-point" data-session-id="week4-1" data-point-id="1"><span class="completion-checkbox"></span>User-Centered Design</li>
+                                <li class="trackable-point" data-session-id="week4-1" data-point-id="2"><span class="completion-checkbox"></span>Problem-Solving Methods</li>
+                                <li class="trackable-point" data-session-id="week4-1" data-point-id="3"><span class="completion-checkbox"></span>Design Process</li>
                             </ul>
                             <h4>May 29: APIs and Data</h4>
                             <ul>
-                                <li>API Integration</li>
-                                <li>Data Input Methods</li>
-                                <li>Data Processing</li>
+                                <li class="trackable-point" data-session-id="week4-2" data-point-id="1"><span class="completion-checkbox"></span>API Integration</li>
+                                <li class="trackable-point" data-session-id="week4-2" data-point-id="2"><span class="completion-checkbox"></span>Data Input Methods</li>
+                                <li class="trackable-point" data-session-id="week4-2" data-point-id="3"><span class="completion-checkbox"></span>Data Processing</li>
                             </ul>
                         </div>
                     </div>
@@ -402,15 +172,15 @@
                         <div class="level-content">
                             <h4>June 3: User-Centric Development</h4>
                             <ul>
-                                <li>User Experience Design</li>
-                                <li>User Interface Development</li>
-                                <li>User Testing</li>
+                                <li class="trackable-point" data-session-id="week5-1" data-point-id="1"><span class="completion-checkbox"></span>User Experience Design</li>
+                                <li class="trackable-point" data-session-id="week5-1" data-point-id="2"><span class="completion-checkbox"></span>User Interface Development</li>
+                                <li class="trackable-point" data-session-id="week5-1" data-point-id="3"><span class="completion-checkbox"></span>User Testing</li>
                             </ul>
                             <h4>June 5: Data Management</h4>
                             <ul>
-                                <li>Data Storage</li>
-                                <li>Data Analysis</li>
-                                <li>Data Visualization</li>
+                                <li class="trackable-point" data-session-id="week5-2" data-point-id="1"><span class="completion-checkbox"></span>Data Storage</li>
+                                <li class="trackable-point" data-session-id="week5-2" data-point-id="2"><span class="completion-checkbox"></span>Data Analysis</li>
+                                <li class="trackable-point" data-session-id="week5-2" data-point-id="3"><span class="completion-checkbox"></span>Data Visualization</li>
                             </ul>
                         </div>
                     </div>
@@ -423,15 +193,15 @@
                         <div class="level-content">
                             <h4>June 10: Business Development</h4>
                             <ul>
-                                <li>Business Models</li>
-                                <li>Market Analysis</li>
-                                <li>Growth Strategies</li>
+                                <li class="trackable-point" data-session-id="week6-1" data-point-id="1"><span class="completion-checkbox"></span>Business Models</li>
+                                <li class="trackable-point" data-session-id="week6-1" data-point-id="2"><span class="completion-checkbox"></span>Market Analysis</li>
+                                <li class="trackable-point" data-session-id="week6-1" data-point-id="3"><span class="completion-checkbox"></span>Growth Strategies</li>
                             </ul>
                             <h4>June 12: Feedback and Q&A</h4>
                             <ul>
-                                <li>Progress Review</li>
-                                <li>Questions and Answers</li>
-                                <li>Next Steps</li>
+                                <li class="trackable-point" data-session-id="week6-2" data-point-id="1"><span class="completion-checkbox"></span>Progress Review</li>
+                                <li class="trackable-point" data-session-id="week6-2" data-point-id="2"><span class="completion-checkbox"></span>Questions and Answers</li>
+                                <li class="trackable-point" data-session-id="week6-2" data-point-id="3"><span class="completion-checkbox"></span>Next Steps</li>
                             </ul>
                         </div>
                     </div>
@@ -444,15 +214,15 @@
                         <div class="level-content">
                             <h4>June 17: Backend Development Intro</h4>
                             <ul>
-                                <li>Backend Fundamentals</li>
-                                <li>Server Architecture</li>
-                                <li>Database Basics</li>
+                                <li class="trackable-point" data-session-id="week7-1" data-point-id="1"><span class="completion-checkbox"></span>Backend Fundamentals</li>
+                                <li class="trackable-point" data-session-id="week7-1" data-point-id="2"><span class="completion-checkbox"></span>Server Architecture</li>
+                                <li class="trackable-point" data-session-id="week7-1" data-point-id="3"><span class="completion-checkbox"></span>Database Basics</li>
                             </ul>
                             <h4>June 19: Build an API</h4>
                             <ul>
-                                <li>API Design</li>
-                                <li>Implementation</li>
-                                <li>Testing and Deployment</li>
+                                <li class="trackable-point" data-session-id="week7-2" data-point-id="1"><span class="completion-checkbox"></span>API Design</li>
+                                <li class="trackable-point" data-session-id="week7-2" data-point-id="2"><span class="completion-checkbox"></span>Implementation</li>
+                                <li class="trackable-point" data-session-id="week7-2" data-point-id="3"><span class="completion-checkbox"></span>Testing and Deployment</li>
                             </ul>
                         </div>
                     </div>
@@ -465,15 +235,15 @@
                         <div class="level-content">
                             <h4>June 24: AI in Development</h4>
                             <ul>
-                                <li>AI Integration</li>
-                                <li>Machine Learning Basics</li>
-                                <li>AI Applications</li>
+                                <li class="trackable-point" data-session-id="week8-1" data-point-id="1"><span class="completion-checkbox"></span>AI Integration</li>
+                                <li class="trackable-point" data-session-id="week8-1" data-point-id="2"><span class="completion-checkbox"></span>Machine Learning Basics</li>
+                                <li class="trackable-point" data-session-id="week8-1" data-point-id="3"><span class="completion-checkbox"></span>AI Applications</li>
                             </ul>
                             <h4>June 26: Business Funding</h4>
                             <ul>
-                                <li>Funding Options</li>
-                                <li>Investment Strategies</li>
-                                <li>Financial Planning</li>
+                                <li class="trackable-point" data-session-id="week8-2" data-point-id="1"><span class="completion-checkbox"></span>Funding Options</li>
+                                <li class="trackable-point" data-session-id="week8-2" data-point-id="2"><span class="completion-checkbox"></span>Investment Strategies</li>
+                                <li class="trackable-point" data-session-id="week8-2" data-point-id="3"><span class="completion-checkbox"></span>Financial Planning</li>
                             </ul>
                         </div>
                     </div>
@@ -486,175 +256,133 @@
                         <div class="level-content">
                             <h4>July 1: App Business Marketing</h4>
                             <ul>
-                                <li>Marketing Strategies</li>
-                                <li>User Acquisition</li>
-                                <li>Growth Hacking</li>
+                                <li class="trackable-point" data-session-id="week9-1" data-point-id="1"><span class="completion-checkbox"></span>Marketing Strategies</li>
+                                <li class="trackable-point" data-session-id="week9-1" data-point-id="2"><span class="completion-checkbox"></span>User Acquisition</li>
+                                <li class="trackable-point" data-session-id="week9-1" data-point-id="3"><span class="completion-checkbox"></span>Growth Hacking</li>
                             </ul>
                             <h4>July 3: Final Feedback and Q&A</h4>
                             <ul>
-                                <li>Program Review</li>
-                                <li>Final Questions</li>
-                                <li>Future Opportunities</li>
+                                <li class="trackable-point" data-session-id="week9-2" data-point-id="1"><span class="completion-checkbox"></span>Program Review</li>
+                                <li class="trackable-point" data-session-id="week9-2" data-point-id="2"><span class="completion-checkbox"></span>Final Questions</li>
+                                <li class="trackable-point" data-session-id="week9-2" data-point-id="3"><span class="completion-checkbox"></span>Future Opportunities</li>
                             </ul>
                         </div>
                     </div>
                 </div>
-                <div class="program-highlights">
-                    <h3>🧠 Program Highlights</h3>
-                    <p>Live Sessions: Every Tuesday and Thursday, 11:00–13:00 SAST</p>
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <section id="projects" class="projects">
-            <div class="container">
+            <section id="notes" class="notes">
+                <h2>Learning Notes</h2>
+                <div class="notes-container">
+                    <div class="notes-input">
+                        <div class="notes-header">
+                            <h3>Add New Note</h3>
+                            <div class="notes-actions">
+                                <button class="save-notes btn"><i class="fas fa-save"></i> Save Note</button>
+                                <button class="clear-notes btn btn-secondary"><i class="fas fa-eraser"></i> Clear</button>
+                            </div>
+                        </div>
+                        <div class="format-buttons">
+                            <button class="format-btn" data-format="bold" title="Bold"><i class="fas fa-bold"></i></button>
+                            <button class="format-btn" data-format="italic" title="Italic"><i class="fas fa-italic"></i></button>
+                            <button class="format-btn" data-format="list" title="List"><i class="fas fa-list"></i></button>
+                            <button class="format-btn" data-format="code" title="Code"><i class="fas fa-code"></i></button>
+                            <button class="format-btn" data-format="link" title="Link"><i class="fas fa-link"></i></button>
+                             <button class="format-btn" data-format="image" title="Add Screenshot"><i class="fas fa-image"></i></button>
+                        </div>
+                        <textarea id="lessonNotes" class="lesson-notes" placeholder="Write your notes here..."></textarea>
+                        <div class="note-category-select">
+                             <label for="noteCategory">Category:</label>
+                             <select id="noteCategory" class="note-category">
+                                 <option value="general">General</option>
+                                 <option value="programming">Programming</option>
+                                 <option value="ui-ux">UI/UX</option>
+                                 <option value="backend">Backend</option>
+                                 <option value="business">Business</option>
+                                 <option value="other">Other</option>
+                             </select>
+                         </div>
+                    </div>
+                     <div class="notes-display">
+                        <div class="notes-header">
+                            <h3>My Notes</h3>
+                            <div class="notes-filters">
+                                 <div class="search-box">
+                                     <input type="text" class="search-input" placeholder="Search notes...">
+                                     <i class="fas fa-search"></i>
+                                 </div>
+                                <select class="sort-notes">
+                                    <option value="newest">Newest First</option>
+                                    <option value="oldest">Oldest First</option>
+                                    <option value="category">By Category</option>
+                                </select>
+                             </div>
+                        </div>
+                         <ul class="category-list">
+                             <li data-category="all" class="active">All</li>
+                             <li data-category="general">General</li>
+                             <li data-category="programming">Programming</li>
+                             <li data-category="ui-ux">UI/UX</li>
+                             <li data-category="backend">Backend</li>
+                             <li data-category="business">Business</li>
+                             <li data-category="other">Other</li>
+                         </ul>
+                        <div class="notes-list">
+                            <!-- Notes will be displayed here by JavaScript -->
+                        </div>
+                    </div>
+                 </div>
+            </section>
+
+            <section id="projects" class="projects">
                 <h2>My Projects</h2>
                 <div class="project-actions">
-                    <button class="btn" id="addProjectBtn">
-                        <i class="fas fa-plus"></i> Add New Project
-                    </button>
+                    <button id="addProjectBtn" class="btn"><i class="fas fa-plus"></i> Add New Project</button>
                 </div>
                 <div class="project-grid">
-                    <div class="project-card" data-project-id="1">
-                        <div class="project-header">
-                            <h3>Project 1</h3>
-                            <div class="project-actions">
-                                <button class="edit-project" title="Edit Project">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="delete-project" title="Delete Project">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="project-content">
-                            <p class="project-description">Description of your first project</p>
-                            <div class="project-links">
-                                <a href="#" class="btn" target="_blank">
-                                    <i class="fab fa-github"></i> View Code
-                                </a>
-                                <a href="#" class="btn" target="_blank">
-                                    <i class="fas fa-external-link-alt"></i> Live Demo
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Project cards will be loaded here by JavaScript -->
                 </div>
-            </div>
-        </section>
-
-        <!-- Project Modal -->
-        <div class="modal" id="projectModal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3>Add/Edit Project</h3>
-                    <button class="close-modal">&times;</button>
-                </div>
-                <form id="projectForm">
-                    <div class="form-group">
-                        <label for="projectTitle">Project Title</label>
-                        <input type="text" id="projectTitle" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="projectDescription">Description</label>
-                        <textarea id="projectDescription" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="githubLink">GitHub Repository URL</label>
-                        <input type="url" id="githubLink" placeholder="https://github.com/username/repo">
-                    </div>
-                    <div class="form-group">
-                        <label for="demoLink">Live Demo URL</label>
-                        <input type="url" id="demoLink" placeholder="https://your-demo-url.com">
-                    </div>
-                    <div class="form-actions">
-                        <button type="submit" class="btn">
-                            <i class="fas fa-save"></i> Save Project
-                        </button>
-                        <button type="button" class="btn btn-secondary close-modal">
-                            <i class="fas fa-times"></i> Cancel
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <section id="notes" class="notes">
-            <div class="notes-container">
-                <div class="notes-header">
-                    <h2>Learning Notes</h2>
-                    <div class="notes-actions">
-                        <div class="search-box">
-                            <input type="text" class="search-input" placeholder="Search notes...">
-                            <i class="fas fa-search"></i>
-                        </div>
-                        <select class="sort-notes">
-                            <option value="newest">Newest First</option>
-                            <option value="oldest">Oldest First</option>
-                            <option value="category">By Category</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="notes-content">
-                    <div class="notes-sidebar">
-                        <h3>Categories</h3>
-                        <ul class="category-list">
-                            <li data-category="all" class="active">All Notes</li>
-                            <li data-category="javascript">JavaScript</li>
-                            <li data-category="html">HTML</li>
-                            <li data-category="css">CSS</li>
-                            <li data-category="react">React</li>
-                            <li data-category="other">Other</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="notes-main">
-                        <div class="notes-input">
-                            <textarea class="lesson-notes" placeholder="Take your notes here... Use #tags to categorize"></textarea>
-                            <div class="format-toolbar">
-                                <button class="format-btn" data-format="bold" title="Bold"><i class="fas fa-bold"></i></button>
-                                <button class="format-btn" data-format="italic" title="Italic"><i class="fas fa-italic"></i></button>
-                                <button class="format-btn" data-format="list" title="List"><i class="fas fa-list"></i></button>
-                                <button class="format-btn" data-format="code" title="Code"><i class="fas fa-code"></i></button>
-                                <button class="format-btn" data-format="link" title="Link"><i class="fas fa-link"></i></button>
-                                <button class="format-btn" data-format="image" title="Add Image"><i class="fas fa-image"></i></button>
-                                <input type="file" id="imageUpload" accept="image/*" style="display: none;">
-                            </div>
-                            <div class="notes-buttons">
-                                <select class="note-category">
-                                    <option value="">Select Category</option>
-                                    <option value="javascript">JavaScript</option>
-                                    <option value="html">HTML</option>
-                                    <option value="css">CSS</option>
-                                    <option value="react">React</option>
-                                    <option value="other">Other</option>
-                                </select>
-                                <button class="btn upload-image">
-                                    <i class="fas fa-image"></i> Add Screenshot
-                                </button>
-                                <button class="btn save-notes">
-                                    <i class="fas fa-save"></i> Save Note
-                                </button>
-                                <button class="btn btn-secondary clear-notes">
-                                    <i class="fas fa-eraser"></i> Clear
-                                </button>
-                                <input type="file" id="imageUpload" accept="image/*" style="display: none;">
-                            </div>
-                        </div>
-                        
-                        <div class="notes-list"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
+            </section>
+        </main>
+    </div>
 
     <footer>
-        <div class="container">
+        <div class="footer-content">
             <p>&copy; 2024 Akira's Learning Journey. All rights reserved.</p>
         </div>
     </footer>
+
+    <!-- Project Modal -->
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add Project</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="projectForm">
+                <div class="form-group">
+                    <label for="projectTitle">Title:</label>
+                    <input type="text" id="projectTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="projectDescription">Description:</label>
+                    <textarea id="projectDescription" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="githubLink">GitHub Link (Optional):</label>
+                    <input type="url" id="githubLink">
+                </div>
+                <div class="form-group">
+                    <label for="demoLink">Live Demo Link (Optional):</label>
+                    <input type="url" id="demoLink">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn"><i class="fas fa-save"></i> Save Project</button>
+                    <button type="button" class="btn btn-secondary close-modal"><i class="fas fa-times"></i> Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
