@@ -45,11 +45,17 @@ const sortNotes = document.querySelector('.sort-notes');
 saveNotesBtn.addEventListener('click', () => {
     const noteText = lessonNotes.value.trim();
     if (noteText) {
+        // Extract tags from the note text (format: #tag1 #tag2)
+        const tags = noteText.match(/#[\w-]+/g) || [];
+        const cleanTags = tags.map(tag => tag.slice(1)); // Remove # symbol
+        
         const note = {
             id: Date.now().toString(),
             text: noteText,
-            category: noteCategory.value,
-            date: new Date().toISOString()
+            tags: cleanTags,
+            category: noteCategory.value || 'other',
+            date: new Date().toISOString(),
+            images: [] // Array to store image data
         };
         
         // Get existing notes
@@ -85,7 +91,8 @@ function displayNotes(filter = 'all', searchTerm = '') {
         .filter(note => {
             const matchesCategory = filter === 'all' || note.category === filter;
             const matchesSearch = searchTerm === '' || 
-                note.text.toLowerCase().includes(searchTerm.toLowerCase());
+                note.text.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                note.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
             return matchesCategory && matchesSearch;
         })
         .sort((a, b) => {
@@ -107,14 +114,100 @@ function displayNotes(filter = 'all', searchTerm = '') {
     filteredNotes.forEach(note => {
         const li = document.createElement('div');
         li.className = 'note-item';
-        li.innerHTML = `
-            <div class="note-content">${formatNoteText(note.text)}</div>
-            <div class="note-footer">
-                <span class="note-category-badge">${note.category}</span>
-                <span class="note-date">${new Date(note.date).toLocaleDateString()}</span>
-            </div>
+        
+        // Create note content
+        const noteContent = document.createElement('div');
+        noteContent.className = 'note-content';
+        noteContent.innerHTML = formatNoteText(note.text);
+        
+        // Add images if they exist
+        if (note.images && note.images.length > 0) {
+            note.images.forEach(imageData => {
+                const container = document.createElement('div');
+                container.className = 'note-image-container';
+                
+                const img = document.createElement('img');
+                img.src = imageData;
+                img.className = 'note-image';
+                img.alt = 'Screenshot';
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-image';
+                removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+                removeBtn.addEventListener('click', () => removeImage(note.id, imageData));
+                
+                container.appendChild(img);
+                container.appendChild(removeBtn);
+                noteContent.appendChild(container);
+            });
+        }
+        
+        li.appendChild(noteContent);
+        
+        // Add tags if they exist
+        if (note.tags.length > 0) {
+            const tagsDiv = document.createElement('div');
+            tagsDiv.className = 'note-tags';
+            tagsDiv.innerHTML = note.tags.map(tag => `<span class="note-tag">#${tag}</span>`).join('');
+            li.appendChild(tagsDiv);
+        }
+        
+        // Add footer
+        const footer = document.createElement('div');
+        footer.className = 'note-footer';
+        footer.innerHTML = `
+            <span class="note-category-badge">${note.category}</span>
+            <span class="note-date">${formatDate(note.date)}</span>
         `;
+        li.appendChild(footer);
+        
+        // Add actions
+        const actions = document.createElement('div');
+        actions.className = 'note-actions';
+        actions.innerHTML = `
+            <button class="note-action-btn edit-note" data-note-id="${note.id}">
+                <i class="fas fa-edit"></i> Edit
+            </button>
+            <button class="note-action-btn delete-note" data-note-id="${note.id}">
+                <i class="fas fa-trash"></i> Delete
+            </button>
+        `;
+        li.appendChild(actions);
+        
         notesList.appendChild(li);
+    });
+
+    // Add event listeners for note actions
+    addNoteActionListeners();
+}
+
+// Format date
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diff = now - date;
+    
+    // If less than 24 hours ago
+    if (diff < 24 * 60 * 60 * 1000) {
+        const hours = Math.floor(diff / (60 * 60 * 1000));
+        if (hours === 0) {
+            const minutes = Math.floor(diff / (60 * 1000));
+            return `${minutes} minute${minutes === 1 ? '' : 's'} ago`;
+        }
+        return `${hours} hour${hours === 1 ? '' : 's'} ago`;
+    }
+    
+    // If less than 7 days ago
+    if (diff < 7 * 24 * 60 * 60 * 1000) {
+        const days = Math.floor(diff / (24 * 60 * 60 * 1000));
+        return `${days} day${days === 1 ? '' : 's'} ago`;
+    }
+    
+    // Otherwise, show full date
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
     });
 }
 
@@ -125,7 +218,79 @@ function formatNoteText(text) {
         .replace(/\*(.*?)\*/g, '<em>$1</em>')
         .replace(/`(.*?)`/g, '<code>$1</code>')
         .replace(/\n- (.*?)(?=\n|$)/g, '<li>$1</li>')
-        .replace(/(<li>.*?<\/li>)/g, '<ul>$1</ul>');
+        .replace(/(<li>.*?<\/li>)/g, '<ul>$1</ul>')
+        .replace(/\n/g, '<br>');
+}
+
+// Add event listeners for note actions
+function addNoteActionListeners() {
+    // Edit note
+    document.querySelectorAll('.edit-note').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const noteId = btn.dataset.noteId;
+            const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+            const note = notes.find(n => n.id === noteId);
+            
+            if (note) {
+                // Set the note text in the textarea
+                lessonNotes.value = note.text;
+                noteCategory.value = note.category;
+                
+                // Scroll to notes input
+                document.querySelector('.notes-input').scrollIntoView({
+                    behavior: 'smooth'
+                });
+                
+                // Delete the old note
+                const updatedNotes = notes.filter(n => n.id !== noteId);
+                localStorage.setItem('notes', JSON.stringify(updatedNotes));
+                
+                // Update display
+                displayNotes();
+                
+                showNotification('Note loaded for editing');
+            }
+        });
+    });
+    
+    // Delete note
+    document.querySelectorAll('.delete-note').forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (confirm('Are you sure you want to delete this note?')) {
+                const noteId = btn.dataset.noteId;
+                const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+                const updatedNotes = notes.filter(note => note.id !== noteId);
+                localStorage.setItem('notes', JSON.stringify(updatedNotes));
+                displayNotes();
+                showNotification('Note deleted successfully!');
+            }
+        });
+    });
+
+    // Remove image
+    document.querySelectorAll('.remove-image').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const imageData = btn.closest('.note-item').querySelector('.note-image').src;
+            const noteId = btn.closest('.note-item').querySelector('.edit-note').dataset.noteId;
+            
+            // Get the note from localStorage
+            const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+            const note = notes.find(n => n.id === noteId);
+            
+            if (note) {
+                // Remove the image from the note's images array
+                note.images = note.images.filter(img => img !== imageData);
+                
+                // Update localStorage
+                localStorage.setItem('notes', JSON.stringify(notes));
+                
+                // Update display
+                displayNotes();
+                
+                showNotification('Image removed successfully!');
+            }
+        });
+    });
 }
 
 // Category filter
@@ -190,17 +355,122 @@ document.querySelectorAll('.format-btn').forEach(btn => {
                         text.substring(end);
                 }
                 break;
+            case 'image':
+                document.getElementById('imageUpload').click();
+                break;
         }
         
-        lessonNotes.value = formattedText;
-        lessonNotes.focus();
+        if (formattedText) {
+            lessonNotes.value = formattedText;
+            lessonNotes.focus();
+        }
     });
 });
 
+// Image upload functionality
+const uploadImageBtn = document.querySelector('.upload-image');
+const imageUpload = document.getElementById('imageUpload');
+
+uploadImageBtn.addEventListener('click', () => {
+    imageUpload.click();
+});
+
+imageUpload.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            // Create an image element
+            const img = document.createElement('img');
+            img.src = event.target.result;
+            img.className = 'note-image';
+            img.alt = 'Screenshot';
+            
+            // Create a container for the image
+            const container = document.createElement('div');
+            container.className = 'note-image-container';
+            
+            // Create image actions container
+            const actionsContainer = document.createElement('div');
+            actionsContainer.className = 'image-actions';
+            
+            // Create delete button
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'image-action-btn delete-image';
+            deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Delete';
+            deleteBtn.addEventListener('click', () => {
+                if (confirm('Are you sure you want to delete this screenshot?')) {
+                    container.remove();
+                }
+            });
+            
+            // Create save button
+            const saveBtn = document.createElement('button');
+            saveBtn.className = 'image-action-btn save-image';
+            saveBtn.innerHTML = '<i class="fas fa-save"></i> Save';
+            saveBtn.addEventListener('click', () => {
+                // Get the current note
+                const noteText = lessonNotes.value.trim();
+                if (noteText) {
+                    // Extract tags from the note text
+                    const tags = noteText.match(/#[\w-]+/g) || [];
+                    const cleanTags = tags.map(tag => tag.slice(1));
+                    
+                    const note = {
+                        id: Date.now().toString(),
+                        text: noteText,
+                        tags: cleanTags,
+                        category: noteCategory.value || 'other',
+                        date: new Date().toISOString(),
+                        images: [event.target.result] // Save the image data
+                    };
+                    
+                    // Get existing notes
+                    const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+                    notes.push(note);
+                    
+                    // Save to localStorage
+                    localStorage.setItem('notes', JSON.stringify(notes));
+                    
+                    // Clear textarea
+                    lessonNotes.value = '';
+                    
+                    // Update notes list
+                    displayNotes();
+                    
+                    // Show success message
+                    showNotification('Screenshot saved successfully!');
+                } else {
+                    showNotification('Please add some text to your note before saving the screenshot', 'error');
+                }
+            });
+            
+            // Add buttons to actions container
+            actionsContainer.appendChild(saveBtn);
+            actionsContainer.appendChild(deleteBtn);
+            
+            // Add image and actions to container
+            container.appendChild(img);
+            container.appendChild(actionsContainer);
+            
+            // Add the container to the notes list
+            const notesList = document.querySelector('.notes-list');
+            const noteItem = document.createElement('div');
+            noteItem.className = 'note-item';
+            noteItem.appendChild(container);
+            notesList.appendChild(noteItem);
+            
+            // Clear the file input
+            imageUpload.value = '';
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
 // Notification system
-function showNotification(message) {
+function showNotification(message, type = 'success') {
     const notification = document.createElement('div');
-    notification.className = 'notification';
+    notification.className = `notification ${type}`;
     notification.textContent = message;
     document.body.appendChild(notification);
     
@@ -212,8 +482,6 @@ function showNotification(message) {
 // Load notes when page loads
 document.addEventListener('DOMContentLoaded', () => {
     displayNotes();
-    loadVideos();
-    loadProjects();
 });
 
 // Theme toggle functionality
@@ -244,325 +512,6 @@ function updateThemeUI(theme) {
         themeText.textContent = 'Dark Mode';
     }
 }
-
-// Video functionality
-const videoGrid = document.querySelector('.video-grid');
-
-// YouTube API configuration
-const CHANNEL_ID = 'UC_AppoftheYearAcademy';
-const VIDEO_IDS = [
-    // Add your video IDs here
-    'dQw4w9WgXcQ',  // Example video ID
-    'jNQXAC9IVRw',  // Example video ID
-];
-
-// Video progress tracking
-let watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '[]');
-let completedWeeks = JSON.parse(localStorage.getItem('completedWeeks') || '[]');
-
-// Function to check if API key is set
-function checkApiKey() {
-    if (!API_KEY) {
-        throw new Error('YouTube API key is not set. Please add your API key to the script.js file.');
-    }
-}
-
-// Function to create week header
-function createWeekHeader(weekNumber) {
-    const weekHeader = document.createElement('div');
-    weekHeader.className = 'week-header';
-    weekHeader.innerHTML = `
-        <h2>Week ${weekNumber}</h2>
-        <button class="btn complete-week-btn" data-week="${weekNumber}" ${completedWeeks.includes(weekNumber) ? 'disabled' : ''}>
-            ${completedWeeks.includes(weekNumber) ? 'Week Completed ✓' : 'Complete Week'}
-        </button>
-    `;
-    
-    // Add event listener for complete week button
-    const completeBtn = weekHeader.querySelector('.complete-week-btn');
-    completeBtn.addEventListener('click', () => {
-        if (!completedWeeks.includes(weekNumber)) {
-            completedWeeks.push(weekNumber);
-            localStorage.setItem('completedWeeks', JSON.stringify(completedWeeks));
-            completeBtn.textContent = 'Week Completed ✓';
-            completeBtn.disabled = true;
-            showNotification(`Week ${weekNumber} completed! 🎉`);
-            updateProgress();
-        }
-    });
-    
-    return weekHeader;
-}
-
-// Function to update progress
-function updateProgress() {
-    const totalWeeks = 9; // Total number of weeks in the course
-    const weeksCompleted = completedWeeks.length;
-    const progressPercentage = (weeksCompleted / totalWeeks) * 100;
-    
-    // Update progress bar
-    const progressFill = document.querySelector('.progress-fill');
-    const progressText = document.getElementById('progress-percentage');
-    
-    progressFill.style.width = `${progressPercentage}%`;
-    progressText.textContent = `${Math.round(progressPercentage)}%`;
-    
-    // Update weeks completed
-    document.getElementById('completed-weeks').textContent = weeksCompleted;
-    document.getElementById('remaining-weeks').textContent = totalWeeks - weeksCompleted;
-}
-
-// Function to create video card
-function createVideoCard(video) {
-    const card = document.createElement('div');
-    card.className = 'video-card';
-    card.dataset.week = video.week; // Add week number to the card
-    
-    // Create thumbnail container
-    const thumbnailContainer = document.createElement('div');
-    thumbnailContainer.className = 'video-thumbnail';
-    
-    // Create and configure thumbnail image
-    const thumbnail = document.createElement('img');
-    thumbnail.src = video.thumbnail;
-    thumbnail.alt = video.title;
-    
-    // Add error handling for thumbnail
-    thumbnail.onerror = function() {
-        this.src = 'https://via.placeholder.com/1280x720/1e293b/ffffff?text=Video+Thumbnail';
-        this.alt = 'Thumbnail not available';
-    };
-    
-    // Create duration overlay
-    const duration = document.createElement('div');
-    duration.className = 'video-duration';
-    duration.textContent = formatDuration(video.duration);
-    
-    // Assemble thumbnail container
-    thumbnailContainer.appendChild(thumbnail);
-    thumbnailContainer.appendChild(duration);
-    
-    // Create video info
-    const info = document.createElement('div');
-    info.className = 'video-info';
-    info.innerHTML = `
-        <div class="video-header">
-            <h3>${video.title}</h3>
-            <label class="video-checkbox">
-                <input type="checkbox" class="video-watched" data-video-id="${video.videoId}" ${watchedVideos.includes(video.videoId) ? 'checked' : ''}>
-                <span>Watched</span>
-            </label>
-        </div>
-        <p class="video-date">${new Date(video.publishedAt).toLocaleDateString()}</p>
-        <p class="video-description">${video.description}</p>
-        <a href="${video.url}" target="_blank" class="btn">
-            <i class="fab fa-youtube"></i> Watch on YouTube
-        </a>
-    `;
-    
-    // Add event listener for checkbox
-    const checkbox = info.querySelector('.video-watched');
-    checkbox.addEventListener('change', (e) => {
-        const videoId = e.target.dataset.videoId;
-        const weekNumber = card.dataset.week;
-        
-        if (e.target.checked) {
-            if (!watchedVideos.includes(videoId)) {
-                watchedVideos.push(videoId);
-            }
-        } else {
-            watchedVideos = watchedVideos.filter(id => id !== videoId);
-            // Remove week from completed weeks if unchecking a video
-            completedWeeks = completedWeeks.filter(week => week !== weekNumber);
-        }
-        
-        // Check if week is complete
-        if (isWeekComplete(weekNumber)) {
-            if (!completedWeeks.includes(weekNumber)) {
-                completedWeeks.push(weekNumber);
-                showNotification(`Week ${weekNumber} completed! 🎉`);
-            }
-        } else {
-            completedWeeks = completedWeeks.filter(week => week !== weekNumber);
-        }
-        
-        // Save to localStorage
-        localStorage.setItem('watchedVideos', JSON.stringify(watchedVideos));
-        localStorage.setItem('completedWeeks', JSON.stringify(completedWeeks));
-        
-        // Update progress
-        updateProgress();
-    });
-    
-    // Assemble card
-    card.appendChild(thumbnailContainer);
-    card.appendChild(info);
-    
-    return card;
-}
-
-// Function to fetch video data using oEmbed
-async function fetchVideoData(videoId) {
-    try {
-        const response = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        return {
-            title: data.title,
-            thumbnail: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`,
-            publishedAt: new Date().toISOString(), // oEmbed doesn't provide publish date
-            url: `https://www.youtube.com/watch?v=${videoId}`,
-            videoId: videoId,
-            week: 1, // You'll need to manually set the week for each video
-            description: data.author_name // Using author name as description since oEmbed doesn't provide description
-        };
-    } catch (error) {
-        console.error(`Error fetching video ${videoId}:`, error);
-        return null;
-    }
-}
-
-// Function to load videos
-async function loadVideos() {
-    try {
-        // Show loading state
-        videoGrid.innerHTML = '<div class="loading">Loading videos...</div>';
-        
-        // Fetch videos using oEmbed
-        const videoPromises = VIDEO_IDS.map(videoId => fetchVideoData(videoId));
-        const videos = (await Promise.all(videoPromises)).filter(video => video !== null);
-        
-        // Clear loading state
-        videoGrid.innerHTML = '';
-        
-        // Group videos by week
-        const videosByWeek = {};
-        videos.forEach(video => {
-            if (!videosByWeek[video.week]) {
-                videosByWeek[video.week] = [];
-            }
-            videosByWeek[video.week].push(video);
-        });
-        
-        // Sort weeks
-        const sortedWeeks = Object.keys(videosByWeek).sort((a, b) => a - b);
-        
-        // Create week sections
-        sortedWeeks.forEach(weekNumber => {
-            // Add week header
-            const weekHeader = createWeekHeader(weekNumber);
-            videoGrid.appendChild(weekHeader);
-            
-            // Create week container
-            const weekContainer = document.createElement('div');
-            weekContainer.className = 'week-container';
-            weekContainer.dataset.week = weekNumber;
-            
-            // Add videos for this week
-            videosByWeek[weekNumber].forEach(video => {
-                const videoCard = createVideoCard(video);
-                weekContainer.appendChild(videoCard);
-            });
-            
-            videoGrid.appendChild(weekContainer);
-        });
-        
-        // Update progress after loading videos
-        updateProgress();
-        
-        // Show success notification
-        showNotification('Videos loaded successfully!');
-    } catch (error) {
-        console.error('Error loading videos:', error);
-        videoGrid.innerHTML = `
-            <div class="error">
-                <p>${error.message}</p>
-                <p>Please check your internet connection and try again.</p>
-            </div>
-        `;
-        showNotification('Error loading videos. Please check the console for details.', 'error');
-    }
-}
-
-// Load videos when page loads
-document.addEventListener('DOMContentLoaded', () => {
-    displayNotes();
-    loadVideos();
-});
-
-// Function to format duration
-function formatDuration(seconds) {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = seconds % 60;
-    
-    if (hours > 0) {
-        return `${hours}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-    }
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-}
-
-// Add loading and error styles
-const style = document.createElement('style');
-style.textContent = `
-    .loading, .error {
-        text-align: center;
-        padding: 2rem;
-        color: var(--text-color);
-        font-size: 1.1rem;
-    }
-    
-    .error {
-        color: var(--error);
-    }
-`;
-document.head.appendChild(style);
-
-// Add refresh button to video actions
-const videoActions = document.querySelector('.video-actions');
-const refreshButton = document.createElement('button');
-refreshButton.className = 'btn btn-secondary refresh-btn';
-refreshButton.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh Videos';
-refreshButton.addEventListener('click', () => {
-    refreshButton.classList.add('rotating');
-    loadVideos().finally(() => {
-        refreshButton.classList.remove('rotating');
-    });
-});
-videoActions.insertBefore(refreshButton, videoActions.firstChild);
-
-// Auto-refresh every 5 minutes
-setInterval(() => {
-    loadVideos();
-}, 5 * 60 * 1000);
-
-// Add refresh button styles
-const refreshStyles = document.createElement('style');
-refreshStyles.textContent = `
-    .refresh-btn {
-        margin-right: 1rem;
-    }
-    
-    .refresh-btn i {
-        margin-right: 0.5rem;
-    }
-    
-    .rotating i {
-        animation: rotate 1s linear infinite;
-    }
-    
-    @keyframes rotate {
-        from {
-            transform: rotate(0deg);
-        }
-        to {
-            transform: rotate(360deg);
-        }
-    }
-`;
-document.head.appendChild(refreshStyles);
 
 // Project Management
 const projectGrid = document.querySelector('.project-grid');
@@ -617,99 +566,159 @@ function createProjectCard(project) {
         </div>
     `;
     
-    // Add event listeners
-    card.querySelector('.edit-project').addEventListener('click', () => editProject(project));
-    card.querySelector('.delete-project').addEventListener('click', () => deleteProject(project.id));
-    
     return card;
 }
 
-// Show modal
-function showModal() {
-    projectModal.classList.add('active');
-}
-
-// Hide modal
-function hideModal() {
-    projectModal.classList.remove('active');
-    projectForm.reset();
-    currentProjectId = null;
-}
-
-// Add new project
-function addProject() {
-    currentProjectId = null;
-    projectForm.reset();
-    showModal();
-}
-
-// Edit project
-function editProject(project) {
-    currentProjectId = project.id;
-    document.getElementById('projectTitle').value = project.title;
-    document.getElementById('projectDescription').value = project.description;
-    document.getElementById('githubLink').value = project.githubLink || '';
-    document.getElementById('demoLink').value = project.demoLink || '';
-    showModal();
-}
-
-// Delete project
-function deleteProject(id) {
-    if (confirm('Are you sure you want to delete this project?')) {
-        const projects = JSON.parse(localStorage.getItem('projects') || '[]');
-        const updatedProjects = projects.filter(project => project.id !== id);
-        localStorage.setItem('projects', JSON.stringify(updatedProjects));
-        loadProjects();
-        showNotification('Project deleted successfully!');
+// Remove image function
+function removeImage(noteId, imageData) {
+    const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+    const noteIndex = notes.findIndex(note => note.id === noteId);
+    
+    if (noteIndex !== -1) {
+        // Remove the image from the note's images array
+        notes[noteIndex].images = notes[noteIndex].images.filter(img => img !== imageData);
+        
+        // Update localStorage
+        localStorage.setItem('notes', JSON.stringify(notes));
+        
+        // Update display
+        displayNotes();
+        
+        showNotification('Image removed successfully!');
     }
 }
 
-// Save project
-function saveProject(e) {
-    e.preventDefault();
-    
-    const project = {
-        id: currentProjectId || Date.now().toString(),
-        title: document.getElementById('projectTitle').value,
-        description: document.getElementById('projectDescription').value,
-        githubLink: document.getElementById('githubLink').value,
-        demoLink: document.getElementById('demoLink').value
-    };
-    
-    const projects = JSON.parse(localStorage.getItem('projects') || '[]');
-    
-    if (currentProjectId) {
-        // Update existing project
-        const index = projects.findIndex(p => p.id === currentProjectId);
-        projects[index] = project;
-    } else {
-        // Add new project
-        projects.push(project);
+// Progress tracking system
+const weekItems = document.querySelectorAll('.week-item');
+const progressFill = document.querySelector('.progress-fill');
+const progressText = document.querySelector('.progress-text');
+
+// Load progress from localStorage
+function loadWeeklyProgress() {
+    try {
+        const progress = JSON.parse(localStorage.getItem('sessionProgress')) || {};
+        let totalCompleted = 0;
+        const weeklyProgress = {};
+
+        // Initialize weekly progress
+        for (let i = 1; i <= 9; i++) {
+            weeklyProgress[`week${i}`] = 0;
+        }
+
+        // Count completed sessions
+        weekItems.forEach(item => {
+            const sessionId = item.dataset.week;
+            const weekNumber = sessionId.split('-')[0]; // e.g., "week1-1" -> "week1"
+            
+            if (progress[sessionId]) {
+                item.classList.add('completed');
+                item.querySelector('.week-status').textContent = 'Completed';
+                totalCompleted++;
+                weeklyProgress[weekNumber]++;
+            } else {
+                item.classList.remove('completed');
+                item.querySelector('.week-status').textContent = 'Not Started';
+            }
+        });
+
+        updateProgress(totalCompleted, weeklyProgress);
+        console.log('Progress loaded:', progress);
+    } catch (error) {
+        console.error('Error loading progress:', error);
+        localStorage.setItem('sessionProgress', JSON.stringify({}));
     }
-    
-    localStorage.setItem('projects', JSON.stringify(projects));
-    loadProjects();
-    hideModal();
-    showNotification(`Project ${currentProjectId ? 'updated' : 'added'} successfully!`);
 }
 
-// Event Listeners
-addProjectBtn.addEventListener('click', addProject);
-projectForm.addEventListener('submit', saveProject);
-document.querySelectorAll('.close-modal').forEach(btn => {
-    btn.addEventListener('click', hideModal);
+// Toggle session completion
+function toggleWeek(sessionId) {
+    try {
+        const progress = JSON.parse(localStorage.getItem('sessionProgress')) || {};
+        const sessionItem = document.querySelector(`[data-week="${sessionId}"]`);
+        const weekNumber = sessionId.split('-')[0];
+        
+        if (progress[sessionId]) {
+            delete progress[sessionId];
+            sessionItem.classList.remove('completed');
+            sessionItem.querySelector('.week-status').textContent = 'Not Started';
+        } else {
+            progress[sessionId] = {
+                completed: true,
+                date: new Date().toISOString()
+            };
+            sessionItem.classList.add('completed');
+            sessionItem.querySelector('.week-status').textContent = 'Completed';
+        }
+
+        // Save to localStorage
+        localStorage.setItem('sessionProgress', JSON.stringify(progress));
+        
+        // Calculate progress
+        const totalCompleted = Object.keys(progress).length;
+        const weeklyProgress = {};
+        
+        // Count completed sessions per week
+        for (let i = 1; i <= 9; i++) {
+            weeklyProgress[`week${i}`] = 0;
+        }
+        
+        Object.keys(progress).forEach(session => {
+            const week = session.split('-')[0];
+            weeklyProgress[week]++;
+        });
+
+        updateProgress(totalCompleted, weeklyProgress);
+        
+        // Show save confirmation
+        showNotification('Progress saved successfully!', 'success');
+        
+        console.log('Progress updated:', progress);
+    } catch (error) {
+        console.error('Error updating progress:', error);
+        showNotification('Error saving progress. Please try again.', 'error');
+    }
+}
+
+// Update progress display
+function updateProgress(totalCompleted, weeklyProgress) {
+    const totalSessions = 18;
+    const totalPercentage = (totalCompleted / totalSessions * 100).toFixed(2);
+    
+    // Update total progress bar
+    progressFill.style.width = `${totalPercentage}%`;
+    
+    // Create progress text with total and weekly progress
+    let progressHTML = `
+        <div class="total-progress">
+            <strong>Total Progress:</strong> ${totalPercentage}% (${totalCompleted}/${totalSessions} sessions)
+        </div>
+        <div class="weekly-progress">
+            <strong>Weekly Progress:</strong>
+    `;
+    
+    // Add weekly progress
+    Object.entries(weeklyProgress).forEach(([week, completed]) => {
+        const weekNumber = week.replace('week', '');
+        const weekPercentage = (completed / 2 * 100).toFixed(0);
+        progressHTML += `
+            <div class="week-progress">
+                Week ${weekNumber}: ${weekPercentage}% (${completed}/2 sessions)
+            </div>
+        `;
+    });
+    
+    progressHTML += '</div>';
+    progressText.innerHTML = progressHTML;
+}
+
+// Add event listeners for session toggles
+weekItems.forEach(item => {
+    const toggleBtn = item.querySelector('.toggle-week');
+    toggleBtn.addEventListener('click', () => {
+        toggleWeek(item.dataset.week);
+    });
 });
 
-// Close modal when clicking outside
-projectModal.addEventListener('click', (e) => {
-    if (e.target === projectModal) {
-        hideModal();
-    }
-});
-
-// Load projects when page loads
+// Initialize progress tracking when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-    displayNotes();
-    loadVideos();
-    loadProjects();
-}); 
+    loadWeeklyProgress();
+});
