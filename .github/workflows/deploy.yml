@@ -28,10 +28,6 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
         
-      - name: Inject API Key
-        run: |
-          sed -i "s/const API_KEY = '';/const API_KEY = '${{ secrets.YOUTUBE_API_KEY }}';/" script.js
-        
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

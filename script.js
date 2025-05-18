@@ -250,7 +250,11 @@ const videoGrid = document.querySelector('.video-grid');
 
 // YouTube API configuration
 const CHANNEL_ID = 'UC_AppoftheYearAcademy';
-const API_KEY = ''; // Remove hardcoded API key
+const VIDEO_IDS = [
+    // Add your video IDs here
+    'dQw4w9WgXcQ',  // Example video ID
+    'jNQXAC9IVRw',  // Example video ID
+];
 
 // Video progress tracking
 let watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '[]');
@@ -397,85 +401,26 @@ function createVideoCard(video) {
     return card;
 }
 
-// Function to fetch videos from YouTube API
-async function fetchYouTubeVideos() {
+// Function to fetch video data using oEmbed
+async function fetchVideoData(videoId) {
     try {
-        checkApiKey();
-        
-        // First, get the channel's uploads playlist ID
-        const channelResponse = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${CHANNEL_ID}&key=${API_KEY}`);
-        const channelData = await channelResponse.json();
-        
-        if (channelData.error) {
-            console.error('Channel API Error:', channelData.error);
-            throw new Error(`YouTube API Error: ${channelData.error.message}`);
+        const response = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
-        if (!channelData.items || channelData.items.length === 0) {
-            // Try alternative search method
-            const searchResponse = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=App+of+the+Year+Academy&type=channel&key=${API_KEY}`);
-            const searchData = await searchResponse.json();
-            
-            if (!searchData.items || searchData.items.length === 0) {
-                throw new Error('Channel not found');
-            }
-            
-            const channelId = searchData.items[0].id.channelId;
-            const videosResponse = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&maxResults=50&order=date&type=video&key=${API_KEY}`);
-            const videosData = await videosResponse.json();
-            
-            if (videosData.error) {
-                throw new Error(`YouTube API Error: ${videosData.error.message}`);
-            }
-            
-            if (!videosData.items || videosData.items.length === 0) {
-                throw new Error('No videos found');
-            }
-            
-            // Group videos by week based on publish date
-            const videos = videosData.items.map(item => ({
-                title: item.snippet.title,
-                description: item.snippet.description,
-                thumbnail: item.snippet.thumbnails.maxres?.url || item.snippet.thumbnails.high?.url,
-                publishedAt: item.snippet.publishedAt,
-                url: `https://www.youtube.com/watch?v=${item.id.videoId}`,
-                videoId: item.id.videoId,
-                week: Math.ceil((new Date() - new Date(item.snippet.publishedAt)) / (7 * 24 * 60 * 60 * 1000))
-            }));
-            
-            return videos;
-        }
-        
-        // If we have the channel data, get the uploads playlist
-        const uploadsPlaylistId = channelData.items[0].contentDetails.relatedPlaylists.uploads;
-        
-        // Get videos from the uploads playlist
-        const playlistResponse = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=50&key=${API_KEY}`);
-        const playlistData = await playlistResponse.json();
-        
-        if (playlistData.error) {
-            throw new Error(`YouTube API Error: ${playlistData.error.message}`);
-        }
-        
-        if (!playlistData.items || playlistData.items.length === 0) {
-            throw new Error('No videos found in playlist');
-        }
-        
-        // Group videos by week based on publish date
-        const videos = playlistData.items.map(item => ({
-            title: item.snippet.title,
-            description: item.snippet.description,
-            thumbnail: item.snippet.thumbnails.maxres?.url || item.snippet.thumbnails.high?.url,
-            publishedAt: item.snippet.publishedAt,
-            url: `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`,
-            videoId: item.snippet.resourceId.videoId,
-            week: Math.ceil((new Date() - new Date(item.snippet.publishedAt)) / (7 * 24 * 60 * 60 * 1000))
-        }));
-        
-        return videos;
+        const data = await response.json();
+        return {
+            title: data.title,
+            thumbnail: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`,
+            publishedAt: new Date().toISOString(), // oEmbed doesn't provide publish date
+            url: `https://www.youtube.com/watch?v=${videoId}`,
+            videoId: videoId,
+            week: 1, // You'll need to manually set the week for each video
+            description: data.author_name // Using author name as description since oEmbed doesn't provide description
+        };
     } catch (error) {
-        console.error('Error fetching YouTube videos:', error);
-        throw error;
+        console.error(`Error fetching video ${videoId}:`, error);
+        return null;
     }
 }
 
@@ -485,8 +430,9 @@ async function loadVideos() {
         // Show loading state
         videoGrid.innerHTML = '<div class="loading">Loading videos...</div>';
         
-        // Fetch videos from YouTube
-        const videos = await fetchYouTubeVideos();
+        // Fetch videos using oEmbed
+        const videoPromises = VIDEO_IDS.map(videoId => fetchVideoData(videoId));
+        const videos = (await Promise.all(videoPromises)).filter(video => video !== null);
         
         // Clear loading state
         videoGrid.innerHTML = '';
@@ -533,13 +479,7 @@ async function loadVideos() {
         videoGrid.innerHTML = `
             <div class="error">
                 <p>${error.message}</p>
-                <p>Please make sure you have:</p>
-                <ol>
-                    <li>Created a Google Cloud project</li>
-                    <li>Enabled the YouTube Data API v3</li>
-                    <li>Created an API key</li>
-                    <li>Added the API key to the script.js file</li>
-                </ol>
+                <p>Please check your internet connection and try again.</p>
             </div>
         `;
         showNotification('Error loading videos. Please check the console for details.', 'error');
